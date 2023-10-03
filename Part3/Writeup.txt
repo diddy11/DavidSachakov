@@ -1,0 +1,86 @@
+The following tests cover different types of gift card records, including amount changes, messages, and animated messages with embedded programs.
+
+Test1:
+======
+Input:
+------------------------
+num_bytes: 10
+merchant_id: "ABC1234567890"
+customer_id: "XYZ9876543210"
+number_of_gift_card_records: 2
+record 1:
+    record_type: amount_change
+    amount_added: 50
+    signature: "ABCD1234"
+record 2:
+    record_type: message
+    message: "Hello, World!"
+
+Expected Output:
+------------------------
+Merchant ID: ABC1234567890
+Customer ID: XYZ9876543210
+Num records: 2
+   record_type: amount_change
+   amount_added: 50
+   signature: ABCD1234
+   record_type: message
+   message: Hello, World!
+   Total value: 50
+
+============================================================================================================
+
+Test2:
+======
+
+Input:
+------------------------
+num_bytes: 6
+merchant_id: "MERCHANT"
+customer_id: "CUSTOMER"
+number_of_gift_card_records: 1
+record 1:
+    record_type: animated message
+    message: "Welcome!"
+    program: [0x01, 0x00, 0x00, 0x02, 0x00, 0x00, ...]
+
+Expected Output:
+------------------------
+Merchant ID: MERCHANT
+Customer ID: CUSTOMER
+Num records: 1
+   record_type: animated message
+   message: Welcome!
+   [running embedded program]
+
+============================================================================================================
+
+Test3:
+======
+
+Input:
+------------------------
+num_bytes: 12
+merchant_id: "MERCHANT123456"
+customer_id: "CUSTOMER654321"
+number_of_gift_card_records: 2
+record 1:
+    record_type: amount_change
+    amount_added: 100
+    signature: "SIGNATURE1234"
+record 2:
+    record_type: message
+    message: "Thank you for your purchase!"
+
+Expected Output:
+------------------------
+Merchant ID: MERCHANT123456
+Customer ID: CUSTOMER654321
+Num records: 2
+   record_type: amount_change
+   amount_added: 100
+   signature: SIGNATURE1234
+   record_type: message
+   message: Thank you for your purchase!
+   Total value: 100
+============================================================================================================

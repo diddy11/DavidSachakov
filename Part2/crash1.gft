@@ -1,0 +1,16 @@
+//Test Case 1:
+//In the code snippet below, an incorrect value for num_bytes could cause the program to read beyond the allocated memory:
+
+
+// Loop to do the whole file
+while (!feof(input_fd)) {
+    struct gift_card_data *gcd_ptr;
+    fread(&ret_val->num_bytes, 4, 1, input_fd);
+
+    // Make something the size of the rest and read it in
+    ptr = malloc(ret_val->num_bytes);
+    fread(ptr, ret_val->num_bytes, 1, input_fd);
+
+    // ...
+}
+//If the value of num_bytes is set to a very large number that exceeds the actual file size, the subsequent malloc function call may allocate insufficient memory. This can lead to buffer overflows, memory corruption, or segmentation faults when fread attempts to read data into the allocated memory.//

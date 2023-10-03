@@ -1,0 +1,55 @@
+Here's an explanation of the bugs present in each of the test cases:
+
+Bug in Test Case 1:
+The bug in Test Case 1 occurs in the following code snippet:
+
+// Loop to do the whole file
+while (!feof(input_fd)) {
+    struct gift_card_data *gcd_ptr;
+    fread(&ret_val->num_bytes, 4, 1, input_fd);
+
+    // Make something the size of the rest and read it in
+    ptr = malloc(ret_val->num_bytes);
+    fread(ptr, ret_val->num_bytes, 1, input_fd);
+
+    // ...
+}
+
+The bug is that the code does not perform proper validation or verification of the num_bytes value read from the input file. If the value of num_bytes is set to a very large number that exceeds the actual file size, the subsequent call to malloc can allocate insufficient memory. This can lead to buffer overflows, memory corruption, or segmentation faults when fread attempts to read data into the allocated memory.
+
+Bug in Test Case 2:
+The bug in Test Case 2 occurs in the following code snippet:
+
+// Now ptr points at the gift card record data
+for (int i = 0; i <= gcd_ptr->number_of_gift_card_records; i++) {
+    struct gift_card_record_data *gcrd_ptr;
+    gcrd_ptr = gcd_ptr->gift_card_record_data[i] = malloc(sizeof(struct gift_card_record_data));
+
+    // ...
+}
+
+
+The bug is that the loop condition in the for loop is incorrect. The condition should be i < gcd_ptr->number_of_gift_card_records instead of i <= gcd_ptr->number_of_gift_card_records. Since array indices start from 0, using <= as the condition will result in accessing memory beyond the bounds of the gift_card_record_data array when i is equal to gcd_ptr->number_of_gift_card_records. This can lead to accessing invalid memory locations and potential crashes or undefined behavior when subsequent operations are performed on the gcrd_ptr pointer.
+
+Both of these bugs can result in memory errors, crashes, or undefined behavior, making them important issues to address in the code.
+
+
+Test Case 3:
+There is a potential bug that could lead to an infinite loop. The bug is in the animate function, specifically in the case 0x08 branch.
+
+Here's the relevant code snippet:
+
+case 0x08:
+    goto done;
+
+The case 0x08 statement causes the program execution to jump to the done label, which is located at the end of the animate function. However, there is no explicit termination condition or exit statement after the done label. As a result, if the program encounters a case 0x08 instruction, it will jump to the done label and then continue executing the subsequent instructions, leading to an infinite loop.
+
+To trigger this bug and cause an infinite loop, you would need to provide an input program for the animate function that includes an instruction with the value 0x08. For example, you could construct a program where the last instruction is 0x08, like this:
+
+unsigned char program[] = { 0x01, 0x00, 0x00,  // Example instructions
+                            0x02, 0x00, 0x01,
+                            0x08 };  // Infinite loop instruction
+
+When the animate function is called with this program, it will execute the instructions sequentially until it encounters the case 0x08 instruction. At that point, it will jump to the done label, but due to the absence of an exit statement, it will continue executing the subsequent instructions in an infinite loop.
+
+To fix this bug, you would need to add an appropriate termination condition or an explicit exit statement after the done label, depending on the desired behavior of the program.

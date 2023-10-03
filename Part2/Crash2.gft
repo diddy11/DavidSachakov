@@ -1,0 +1,15 @@
+// Test Case 2:
+// In the code snippet below, an incorrect value for number_of_gift_card_records could cause the program to access invalid memory locations:
+
+
+// Now ptr points at the gift card record data
+for (int i = 0; i <= gcd_ptr->number_of_gift_card_records; i++) {
+    struct gift_card_record_data *gcrd_ptr;
+    gcrd_ptr = gcd_ptr->gift_card_record_data[i] = malloc(sizeof(struct gift_card_record_data));
+
+    // ...
+}
+
+// If the value of number_of_gift_card_records is set to a number larger than the actual number of gift card records in the file, the loop will iterate beyond the allocated memory. 
+
+// This can result in accessing invalid memory locations, leading to crashes or undefined behavior when subsequent operations are performed on the gcrd_ptr pointer. //

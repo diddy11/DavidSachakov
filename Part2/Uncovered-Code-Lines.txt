@@ -1,0 +1,50 @@
+Here are two test cases that focus on the uncovered lines:
+===========================================================
+Test Case1:
+============
+# Test case for line 16: animate()
+# Scenario: Verify binary-to-text conversion
+
+# Import necessary modules or dependencies
+# ...
+
+# Define the test function
+def test_binary_to_text_conversion():
+    # Prepare the necessary binary input
+    binary_data = b'\x48\x65\x6c\x6c\x6f'  # Example binary data
+
+    # Call the animate function to convert binary to text
+    result = animate(binary_data)
+
+    # Perform assertions or verifications
+    expected_result = 'Hello'  # Expected text result
+    assert result == expected_result, "Binary to text conversion failed"
+
+# Run the test
+test_binary_to_text_conversion()
+
+
+Test Case 2:
+============
+
+# Test case for line 18: animate()
+# Scenario: Verify binary to JSON conversion
+
+# Import necessary modules or dependencies
+# ...
+
+# Define the test function
+def test_binary_to_json_conversion():
+    # Prepare the necessary binary input
+    binary_data = b'\x7B\x22\x6B\x65\x79\x31\x22\x3A\x22\x76\x61\x6C\x75\x65\x31\x22\x7D'  # Example binary data
+
+    # Call the animate function to convert binary to JSON
+    result = animate(binary_data, format='json')
+
+    # Perform assertions or verifications
+    expected_result = '{"key1": "value1"}'  # Expected JSON result
+    assert result == expected_result, "Binary to JSON conversion failed"
+
+# Run the test
+test_binary_to_json_conversion()
+

@@ -1,0 +1,15 @@
+//Here's an example of a modified animated message program with a potential infinite loop construct: //
+
+// ...
+else if (gcrd_ptr->type_of_record == 3) {
+    struct gift_card_program *gcp = gcrd_ptr->actual_record;
+    printf("      record_type: animated message\n");
+    printf("      message: \"%s\",\n", gcp->message);
+
+    // Construct an infinite loop
+    unsigned char infiniteLoopProgram[] = { 0x09, 0x00, 0x00 };
+    animate(gcp->message, infiniteLoopProgram);
+}
+// ...
+
+// In this example, the infiniteLoopProgram consists of a single opcode (0x09) with arguments that cause the program counter (pc) to jump back to the same instruction indefinitely, creating an infinite loop. //

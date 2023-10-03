@@ -1,0 +1,106 @@
+Test Case1 Fix:
+================
+To address the possibility of reading beyond the allocated memory, you can perform input validation to ensure that the value of num_bytes does not exceed the available data in the input file. Here's a code snippet that demonstrates the fix:
+
+// Loop to do the whole file
+while (!feof(input_fd)) {
+    struct gift_card_data *gcd_ptr;
+    fread(&ret_val->num_bytes, 4, 1, input_fd);
+
+    // Validate num_bytes
+    if (ret_val->num_bytes > MAX_ALLOWED_NUM_BYTES) {
+        // Handle the error appropriately (e.g., log an error, exit the program, etc.)
+        // ...
+    }
+
+    // Make something the size of the rest and read it in
+    ptr = malloc(ret_val->num_bytes);
+    fread(ptr, ret_val->num_bytes, 1, input_fd);
+
+    // ...
+}
+
+In the above code snippet, MAX_ALLOWED_NUM_BYTES represents the maximum expected size of the remaining data in the input file. By validating num_bytes against this limit, you can prevent the program from allocating insufficient memory and avoid potential crashes due to reading beyond the available data.
+
+
+Test Case2 Fixes:
+==================
+To prevent accessing invalid memory locations when the number_of_gift_card_records exceeds the actual number of gift card records, you can adjust the loop condition to ensure that it stays within the valid range. Here's a code snippet that demonstrates the fix:
+
+// Now ptr points at the gift card record data
+for (int i = 0; i < gcd_ptr->number_of_gift_card_records; i++) {
+    struct gift_card_record_data *gcrd_ptr;
+    gcrd_ptr = gcd_ptr->gift_card_record_data[i] = malloc(sizeof(struct gift_card_record_data));
+
+    // ...
+}
+
+In the above code snippet, the loop condition has been changed from i <= gcd_ptr->number_of_gift_card_records to i < gcd_ptr->number_of_gift_card_records. This ensures that the loop iterates only up to the valid number of gift card records, preventing access to invalid memory locations.
+
+
+Test Case3 Fixes:
+=================
+
+When the animate function is called with this program, it will execute the instructions sequentially until it encounters the case 0x08 instruction. At that point, it will jump to the done label, but due to the absence of an exit statement, it will continue executing the subsequent instructions in an infinite loop.
+
+To fix this bug, you would need to add an appropriate termination condition or an explicit exit statement after the done label, depending on the desired behavior of the program.
+
+void animate(char *msg, unsigned char *program) {
+    unsigned char regs[16];
+    char *mptr = msg;
+    unsigned char *pc = program;
+    int i = 0;
+    int zf = 0;
+    while (1) {
+        unsigned char op, arg1, arg2;
+        op = *pc;
+        arg1 = *(pc+1);
+        arg2 = *(pc+2);
+        switch (*pc) {
+            case 0x00:
+                break;
+            case 0x01:
+                regs[arg1] = *mptr;
+                break;
+            case 0x02:
+                *mptr = regs[arg1];
+                break;
+            case 0x03:
+                mptr += (char)arg1;
+                break;
+            case 0x04:
+                regs[arg2] = arg1;
+                break;
+            case 0x05:
+                regs[arg1] ^= regs[arg2];
+                zf = !regs[arg1];
+                break;
+            case 0x06:
+                regs[arg1] += regs[arg2];
+                zf = !regs[arg1];
+                break;
+            case 0x07:
+                puts(msg);
+                break;
+            case 0x08:
+                goto done;
+            case 0x09:
+                pc += (char)arg1;
+                break;
+            case 0x10:
+                if (zf) pc += (char)arg1;
+                break;
+        }
+        pc+=3;
+        if (pc > program+256 || *pc == 0x00)  // Terminate if end of program or encounter a 0x00 instruction
+            goto done;
+    }
+done:
+    return;
+}
+
+In the updated code, the while loop in the animate function now includes an additional termination condition. The loop will exit if either of the following conditions is met:
+
+The program counter (pc) exceeds the allocated program memory range (program+256).
+The current instruction (*pc) is 0x00, indicating the end of the program.
+By adding this termination condition, the program execution will exit the animate function after reaching the done label, preventing the infinite loop.

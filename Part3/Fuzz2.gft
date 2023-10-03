@@ -1,0 +1,22 @@
+Test2:
+======
+
+Input:
+------------------------
+num_bytes: 6
+merchant_id: "MERCHANT"
+customer_id: "CUSTOMER"
+number_of_gift_card_records: 1
+record 1:
+    record_type: animated message
+    message: "Welcome!"
+    program: [0x01, 0x00, 0x00, 0x02, 0x00, 0x00, ...]
+
+Expected Output:
+------------------------
+Merchant ID: MERCHANT
+Customer ID: CUSTOMER
+Num records: 1
+   record_type: animated message
+   message: Welcome!
+   [running embedded program]
