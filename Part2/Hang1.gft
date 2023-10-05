@@ -1,15 +1,38 @@
-//Here's an example of a modified animated message program with a potential infinite loop construct: //
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-// ...
-else if (gcrd_ptr->type_of_record == 3) {
-    struct gift_card_program *gcp = gcrd_ptr->actual_record;
-    printf("      record_type: animated message\n");
-    printf("      message: \"%s\",\n", gcp->message);
+void animate(char *msg, unsigned char *program) {
+    unsigned char regs[16];
+    char *mptr = msg;
+    unsigned char *pc = program;
 
-    // Construct an infinite loop
-    unsigned char infiniteLoopProgram[] = { 0x09, 0x00, 0x00 };
-    animate(gcp->message, infiniteLoopProgram);
+    while (pc < program + 256) {
+        unsigned char op, arg1, arg2;
+        op = *pc;
+        arg1 = *(pc + 1);
+        arg2 = *(pc + 2);
+
+        switch (*pc) {
+            // ...
+            case 0x10:
+                // Jump instruction causing an infinite loop
+                pc += (char)arg1;  // Jump to the same instruction
+                break;
+            // ...
+        }
+
+        pc += 3;
+        usleep(5000);
+    }
 }
-// ...
 
-// In this example, the infiniteLoopProgram consists of a single opcode (0x09) with arguments that cause the program counter (pc) to jump back to the same instruction indefinitely, creating an infinite loop. //
+int main() {
+    char msg[] = "Hello, World!";
+    unsigned char program[] = {0x10, 0x00, 0x00};  // Infinite loop instruction
+
+    animate(msg, program);
+
+    return 0;
+}
