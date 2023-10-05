@@ -1,15 +1,38 @@
-// Test Case 2:
-// In the code snippet below, an incorrect value for number_of_gift_card_records could cause the program to access invalid memory locations:
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
+void animate(char *msg, unsigned char *program) {
+    unsigned char regs[16];
+    char *mptr = msg;
+    unsigned char *pc = program;
 
-// Now ptr points at the gift card record data
-for (int i = 0; i <= gcd_ptr->number_of_gift_card_records; i++) {
-    struct gift_card_record_data *gcrd_ptr;
-    gcrd_ptr = gcd_ptr->gift_card_record_data[i] = malloc(sizeof(struct gift_card_record_data));
+    while (pc < program + 256) {
+        unsigned char op, arg1, arg2;
+        op = *pc;
+        arg1 = *(pc + 1);
+        arg2 = *(pc + 2);
 
-    // ...
+        switch (*pc) {
+            // ...
+            case 0xFF:
+                // Attempt to access an invalid memory location
+                *(int *)0 = 42;  // Crash here
+                break;
+            // ...
+        }
+
+        pc += 3;
+        usleep(5000);
+    }
 }
 
-// If the value of number_of_gift_card_records is set to a number larger than the actual number of gift card records in the file, the loop will iterate beyond the allocated memory. 
+int main() {
+    char msg[] = "Hello, World!";
+    unsigned char program[] = {0xFF, 0x00, 0x00};  // Invalid instruction
 
-// This can result in accessing invalid memory locations, leading to crashes or undefined behavior when subsequent operations are performed on the gcrd_ptr pointer. //
+    animate(msg, program);
+
+    return 0;
+}
