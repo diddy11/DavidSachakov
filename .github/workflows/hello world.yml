@@ -12,5 +12,3 @@ jobs:
     steps:
       - name: Say Hello
         run: echo "Hello world"
-```
-This workflow is triggered whenever there is a push to the `main` branch. It consists of one job called `build` that runs on the latest version of Ubuntu. The job has a single step that echoes the message "Hello world".
