@@ -1,16 +1,66 @@
-//Test Case 1:
-//In the code snippet below, an incorrect value for num_bytes could cause the program to read beyond the allocated memory:
-
-
-// Loop to do the whole file
-while (!feof(input_fd)) {
+void print_gift_card_info(struct this_gift_card *thisone) {
     struct gift_card_data *gcd_ptr;
-    fread(&ret_val->num_bytes, 4, 1, input_fd);
+    struct gift_card_record_data *gcrd_ptr;
+    struct gift_card_amount_change *gcac_ptr;
+    struct gift_card_program *gcp_ptr;
 
-    // Make something the size of the rest and read it in
-    ptr = malloc(ret_val->num_bytes);
-    fread(ptr, ret_val->num_bytes, 1, input_fd);
+    gcd_ptr = thisone->gift_card_data;
 
-    // ...
+    // Check if gcd_ptr is a null pointer before accessing its members
+    if (gcd_ptr == NULL) {
+        printf("Null pointer detected!\n");
+        return;
+    }
+
+    printf("   Merchant ID: %32.32s\n", gcd_ptr->merchant_id);
+    printf("   Customer ID: %32.32s\n", gcd_ptr->customer_id);
+    printf("   Num records: %d\n", gcd_ptr->number_of_gift_card_records);
+
+    for (int i = 0; i < gcd_ptr->number_of_gift_card_records; i++) {
+        gcrd_ptr = (struct gift_card_record_data *)gcd_ptr->gift_card_record_data[i];
+
+        // Check if gcrd_ptr is a null pointer before accessing its members
+        if (gcrd_ptr == NULL) {
+            printf("Null pointer detected!\n");
+            continue;
+        }
+
+        if (gcrd_ptr->type_of_record == 1) {
+            printf("      record_type: amount_change\n");
+
+            gcac_ptr = gcrd_ptr->actual_record;
+
+            // Check if gcac_ptr is a null pointer before accessing its members
+            if (gcac_ptr == NULL) {
+                printf("Null pointer detected!\n");
+                continue;
+            }
+
+            printf("      amount_added: %d\n", gcac_ptr->amount_added);
+
+            if (gcac_ptr->amount_added > 0) {
+                printf("      signature: %32.32s\n", gcac_ptr->actual_signature);
+            }
+        }
+        else if (gcrd_ptr->type_of_record == 2) {
+            printf("      record_type: message\n");
+            printf("      message: %s\n", (char *)gcrd_ptr->actual_record);
+        }
+        else if (gcrd_ptr->type_of_record == 3) {
+            gcp_ptr = gcrd_ptr->actual_record;
+
+            // Check if gcp_ptr is a null pointer before accessing its members
+            if (gcp_ptr == NULL) {
+                printf("Null pointer detected!\n");
+                continue;
+            }
+
+            printf("      record_type: animated message\n");
+            printf("      message: %s\n", gcp_ptr->message);
+            printf("  [running embedded program]  \n");
+            animate(gcp_ptr->message, gcp_ptr->program);
+        }
+    }
+
+    printf("  Total value: %d\n\n", get_gift_card_value(thisone));
 }
-//If the value of num_bytes is set to a very large number that exceeds the actual file size, the subsequent malloc function call may allocate insufficient memory. This can lead to buffer overflows, memory corruption, or segmentation faults when fread attempts to read data into the allocated memory.//
